@@ -2,7 +2,6 @@ package com.vlad.decorator;
 
 import java.io.InputStream;
 import java.security.InvalidParameterException;
-import java.util.Arrays;
 
 public class ByteArrayInputStream extends InputStream {
     private byte[] buffer;
@@ -20,8 +19,8 @@ public class ByteArrayInputStream extends InputStream {
     }
 
     @Override
-    public int read(byte[] values, int off, int len) {
-        if (off < 0 || len < 0 || values.length < len) {
+    public int read(byte[] bytes, int off, int len) {
+        if (off < 0 || len < 0 || bytes.length < len) {
             throw new InvalidParameterException();
         }
         if (buffer == null) {
@@ -31,7 +30,7 @@ public class ByteArrayInputStream extends InputStream {
             throw new InvalidParameterException();
         }
 
-        System.arraycopy(buffer, off, values, 0, len);
+        System.arraycopy(buffer, off, bytes, 0, len);
         return len;
     }
 
@@ -39,17 +38,4 @@ public class ByteArrayInputStream extends InputStream {
         return index == count ? -1 : buffer[index++];
     }
 
-    public static void main(String[] args) {
-        byte[] array = {80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90};
-        byte[] array2 = new byte[1];
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(array);
-        int v;
-        while ((v = byteArrayInputStream.read()) != -1) {
-            System.out.print(v + " ");
-        }
-
-        v = byteArrayInputStream.read(array2, 2, 1);
-        System.out.println(v);
-        System.out.println(Arrays.toString(array2));
-    }
 }

@@ -1,9 +1,7 @@
 package com.vlad.decorator;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.security.InvalidParameterException;
-import java.util.Arrays;
 
 public class ByteArrayOutputStream extends OutputStream {
     private static final int INITIAL_CAPACITY = 5;
@@ -23,16 +21,16 @@ public class ByteArrayOutputStream extends OutputStream {
     }
 
     @Override
-    public void write(byte[] values) {
-        write(values, 0, values.length);
+    public void write(byte[] bytes) {
+        write(bytes, 0, bytes.length);
     }
 
     @Override
-    public void write(byte[] values, int off, int len) {
+    public void write(byte[] bytes, int off, int len) {
         if (len + count > array.length) {
             growCapacity(len + count - array.length);
         }
-        System.arraycopy(values, off, array, count, len);
+        System.arraycopy(bytes, off, array, count, len);
         count += len;
     }
 
@@ -53,34 +51,10 @@ public class ByteArrayOutputStream extends OutputStream {
         return new String(array, 0, count);
     }
 
-    public void writeTo(OutputStream out) throws IOException {
-        out.write(array, 0, count);
-    }
-
-    public void reset() {
-        count = 0;
-    }
-
     private void growCapacity(int growSize) {
         byte[] newArray = new byte[array.length + growSize];
         System.arraycopy(array, 0, newArray, 0, array.length);
         array = newArray;
     }
 
-    public static void main(String[] args) {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        int[] intArray = {80, 81, 82, 83, 84, 85, 86, 87, 88, 89};
-
-        byte[] byteArray = {80, 81, 82, 83, 84, 85, 86, 87, 88, 89};
-        for (int i : intArray) {
-            byteArrayOutputStream.write(i);
-        }
-
-        System.out.println(Arrays.toString(byteArrayOutputStream.toByteArray()));
-        System.out.println(byteArrayOutputStream.toString());
-
-        byteArrayOutputStream.write(byteArray);
-        System.out.println(Arrays.toString(byteArrayOutputStream.toByteArray()));
-        System.out.println(byteArrayOutputStream.toString());
-    }
 }

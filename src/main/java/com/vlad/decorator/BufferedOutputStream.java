@@ -1,6 +1,5 @@
 package com.vlad.decorator;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.security.InvalidParameterException;
@@ -24,25 +23,25 @@ public class BufferedOutputStream extends OutputStream {
     }
 
     @Override
-    public void write(byte[] values) throws IOException {
-        write(values, 0, values.length);
+    public void write(byte[] bytes) throws IOException {
+        write(bytes, 0, bytes.length);
     }
 
     @Override
-    public void write(byte[] values, int off, int len) throws IOException {
-        if (values.length == buffer.length - count) {
-            System.arraycopy(values, off, buffer, count, values.length);
-            count += values.length;
+    public void write(byte[] bytes, int off, int len) throws IOException {
+        if (bytes.length == buffer.length - count) {
+            System.arraycopy(bytes, off, buffer, count, bytes.length);
+            count += bytes.length;
             flush();
-        } else if (values.length < buffer.length - count) {
-            System.arraycopy(values, off, buffer, count, values.length);
-            count += values.length;
+        } else if (bytes.length < buffer.length - count) {
+            System.arraycopy(bytes, off, buffer, count, bytes.length);
+            count += bytes.length;
         } else {
             for (int i = 0; i < len; i++) {
                 if (count == buffer.length) {
                     flush();
                 }
-                buffer[count++] = values[off + i];
+                buffer[count++] = bytes[off + i];
             }
         }
     }
@@ -64,17 +63,5 @@ public class BufferedOutputStream extends OutputStream {
             flush();
         }
         buffer[count++] = (byte) value;
-    }
-
-    public static void main(String[] args) throws IOException {
-        BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(new FileOutputStream("test.txt"), 3);
-
-        byte[] str = {80, 81, 82, 83, 84, 85};
-
-
-        bufferedOutputStream.write(str);
-
-        bufferedOutputStream.close();
-
     }
 }
