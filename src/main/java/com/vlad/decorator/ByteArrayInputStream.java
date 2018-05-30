@@ -1,63 +1,55 @@
 package com.vlad.decorator;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
+import java.security.InvalidParameterException;
 import java.util.Arrays;
 
 public class ByteArrayInputStream extends InputStream {
-    private static final int INITIAL_CAPACITY = 5;
-    private InputStream inputStream;
     private byte[] buffer;
     private int count;
     private int index;
 
-    public ByteArrayInputStream(InputStream inputStream) {
-        this(inputStream, INITIAL_CAPACITY);
+    public ByteArrayInputStream(byte[] buffer) {
+        this(buffer, 0, buffer.length);
     }
 
-    public ByteArrayInputStream(InputStream inputStream, int bufferSize) {
-        this.inputStream = inputStream;
-        this.buffer = new byte[bufferSize];
-    }
-
-    @Override
-    public int read(byte[] values) throws IOException {
-        return read(values, 0, );
+    public ByteArrayInputStream(byte[] buffer, int offset, int length) {
+        this.buffer = buffer;
+        this.index = offset;
+        this.count = offset + length;
     }
 
     @Override
-    public int read(byte[] values, int off, int len) throws IOException {
-        if (index >= count) {
-            count = inputStream.read(buffer, off, len);
-            index = 0;
+    public int read(byte[] values, int off, int len) {
+        if (off < 0 || len < 0 || values.length < len) {
+            throw new InvalidParameterException();
         }
-        if (values.length >= buffer.length) {
-            System.arraycopy(buffer, index, values, 0, buffer.length);
-            index = buffer.length;
-        } else if (values.length + index <= buffer.length) {
-            System.arraycopy(buffer, index, values, 0, values.length);
-            index = values.length;
-        } else {
-            System.arraycopy(buffer, index, values, 0, buffer.length - index);
-            index = buffer.length;
+        if (buffer == null) {
+            throw new NullPointerException();
         }
-        return count;
+        if (buffer.length < off + len) {
+            throw new InvalidParameterException();
+        }
+
+        System.arraycopy(buffer, off, values, 0, len);
+        return len;
     }
 
-    public int read() throws IOException {
-        if (index == count) {
-            count = inputStream.read(buffer, 0, buffer.length);
-            index = 0;
-        }
-        return count != -1 ? buffer[index++] : -1;
+    public int read() {
+        return index == count ? -1 : buffer[index++];
     }
 
-    public static void main(String[] args) throws IOException {
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(new FileInputStream("test.txt"));
-        byte[] array = new byte[10];
-        while (byteArrayInputStream.read(array) != -1) {
-            System.out.println(Arrays.toString(array).toCharArray());
+    public static void main(String[] args) {
+        byte[] array = {80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90};
+        byte[] array2 = new byte[1];
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(array);
+        int v;
+        while ((v = byteArrayInputStream.read()) != -1) {
+            System.out.print(v + " ");
         }
+
+        v = byteArrayInputStream.read(array2, 2, 1);
+        System.out.println(v);
+        System.out.println(Arrays.toString(array2));
     }
 }

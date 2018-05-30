@@ -7,7 +7,7 @@ public class BufferedInputStream extends InputStream {
     private static final int INITIAL_CAPACITY = 5;
     private InputStream inputStream;
     private byte[] buffer;
-
+java.io.BufferedInputStream
     public BufferedInputStream(InputStream inputStream) {
         this(inputStream, INITIAL_CAPACITY);
     }
@@ -18,22 +18,17 @@ public class BufferedInputStream extends InputStream {
     }
 
     @Override
-    public int read(byte[] b) throws IOException {
-        return super.read(b);
-    }
-
-    @Override
     public int read(byte[] b, int off, int len) throws IOException {
         return super.read(b, off, len);
-    }
-
-    @Override
-    public void close() throws IOException {
-        inputStream.close();
     }
 
     public int read() throws IOException {
         inputStream.read();
         return 0;
+    }
+
+    @Override
+    public void close() throws IOException {
+        inputStream.close();
     }
 }
