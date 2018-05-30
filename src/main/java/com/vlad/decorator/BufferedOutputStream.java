@@ -15,12 +15,12 @@ public class BufferedOutputStream extends OutputStream {
         this(outputStream, INITIAL_CAPACITY);
     }
 
-    public BufferedOutputStream(OutputStream outputStream, int size) {
-        if (size <= 0) {
+    public BufferedOutputStream(OutputStream outputStream, int bufferSize) {
+        if (bufferSize <= 0) {
             throw new InvalidParameterException("Size should be larger 0!");
         }
         this.outputStream = outputStream;
-        this.buffer = new byte[size];
+        this.buffer = new byte[bufferSize];
     }
 
     @Override
