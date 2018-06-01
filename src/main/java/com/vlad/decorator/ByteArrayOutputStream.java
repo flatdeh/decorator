@@ -15,23 +15,42 @@ public class ByteArrayOutputStream extends OutputStream {
 
     public ByteArrayOutputStream(int size) {
         if (size <= 0) {
-            throw new InvalidParameterException("Size should be larger 0!");
+            throw new InvalidParameterException("Size should > 0! size: " + size);
         }
         this.array = new byte[size];
     }
 
-    @Override
-    public void write(byte[] bytes) {
-        write(bytes, 0, bytes.length);
-    }
 
     @Override
+
     public void write(byte[] bytes, int off, int len) {
-        if (len + count > array.length) {
-            growCapacity(len + count - array.length);
+        validateParameters(bytes, off, len);
+
+        int emptySize = array.length - count;
+
+        if (len <= emptySize) {
+            System.arraycopy(bytes, off, array, count, len);
+            count += len;
+        } else {
+            growCapacity(len - emptySize);
+            System.arraycopy(bytes, off, array, count, len);
+            count += len;
         }
-        System.arraycopy(bytes, off, array, count, len);
-        count += len;
+    }
+
+    private void validateParameters(byte[] bytes, int off, int len) {
+        if (bytes == null) {
+            throw new NullPointerException("bytes = null!");
+        }
+        if (off < 0) {
+            throw new IllegalArgumentException("off should be >= 0! off = " + off);
+        }
+        if (len <= 0) {
+            throw new IllegalArgumentException("len should be > 0! len = " + len);
+        }
+        if (bytes.length < off + len) {
+            throw new IllegalArgumentException("off + len should be <= bytes array length!");
+        }
     }
 
     public void write(int value) {

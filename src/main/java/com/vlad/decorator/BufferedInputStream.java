@@ -25,9 +25,13 @@ public class BufferedInputStream extends InputStream {
         if (off < 0 || len < 0 || bytes.length < len || buffer.length < off + len) {
             throw new InvalidParameterException();
         }
-
+//------>>>Тут косяк
         System.arraycopy(buffer,off,bytes,0,len);
         return len;
+    }
+
+    private void readFromInputStream() {
+
     }
 
     public int read() throws IOException {
@@ -40,9 +44,6 @@ public class BufferedInputStream extends InputStream {
 
     @Override
     public void close() throws IOException {
-        index = 0;
-        count = 0;
-        buffer = null;
         inputStream.close();
     }
 }

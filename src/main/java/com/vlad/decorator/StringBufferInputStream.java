@@ -1,32 +1,50 @@
 package com.vlad.decorator;
 
 import java.io.InputStream;
-import java.security.InvalidParameterException;
 
 public class StringBufferInputStream extends InputStream {
-    private String string;
+    private byte[] buffer;
     private int index;
 
     public StringBufferInputStream(String string) {
-        this.string = string;
+        this.buffer = string.getBytes();
     }
 
     @Override
     public int read(byte[] bytes, int off, int len) {
-        if (off < 0 || len < 0 || bytes.length < len) {
-            throw new InvalidParameterException();
+        validateParameters(bytes, off, len);
+
+        int unreadCount = buffer.length - index;
+
+        if (index == buffer.length) {
+            return -1;
+        } else if (len >= unreadCount) {
+            System.arraycopy(buffer, index, bytes, off, unreadCount);
+            index += unreadCount;
+            return unreadCount;
+        } else {
+            System.arraycopy(buffer, index, bytes, off, len);
+            index += len;
         }
-        if (string == null) {
-            throw new NullPointerException();
-        }
-        if (string.length() < off + len) {
-            throw new InvalidParameterException();
-        }
-        System.arraycopy(string.getBytes(), off, bytes, 0, len);
         return len;
     }
 
+    private void validateParameters(byte[] bytes, int off, int len) {
+        if (bytes == null) {
+            throw new NullPointerException("bytes = null!");
+        }
+        if (off < 0) {
+            throw new IllegalArgumentException("off should be >= 0! off = " + off);
+        }
+        if (len <= 0) {
+            throw new IllegalArgumentException("len should be > 0! len = " + len);
+        }
+        if (bytes.length < off + len) {
+            throw new IllegalArgumentException("off + len should be <= bytes array length!");
+        }
+    }
+
     public int read() {
-        return index == string.length() ? -1 : string.charAt(index++);
+        return index == buffer.length ? -1 : buffer[index++];
     }
 }
