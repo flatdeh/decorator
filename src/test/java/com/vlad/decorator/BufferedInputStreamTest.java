@@ -1,30 +1,47 @@
 package com.vlad.decorator;
 
-import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
 import static org.junit.Assert.*;
 
 public class BufferedInputStreamTest {
-    private String stringArray = "Hello World!!!";
 
-    @Before
-    public void setUp() throws Exception {
-        //BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(stringArray));
+    @Test
+    public void readTest() throws IOException {
+        try (BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream("test.log"));
+             OutputStream outputStream = new FileOutputStream("test.log")) {
+
+            byte[] bytesArray = "Hello World".getBytes();
+            outputStream.write(bytesArray);
+            outputStream.flush();
+
+            int count;
+            int i = 0;
+            while ((count = bufferedInputStream.read()) != -1) {
+                assertEquals(count, bytesArray[i++]);
+            }
+
+            assertEquals(-1, count);
+        }
     }
 
     @Test
-    public void read() throws IOException {
-        BufferedInputStream bufferedInputStream = new BufferedInputStream(new ByteArrayInputStream(stringArray.getBytes()));
-        Assert.assertEquals('H', (char) bufferedInputStream.read());
-    }
+    public void readTestWithOffset() throws IOException {
+        try (java.io.BufferedInputStream bufferedInputStream = new java.io.BufferedInputStream(new FileInputStream("test.log"));
+             OutputStream outputStream = new FileOutputStream("test.log")) {
 
-    @Test
-    public void read1() {
+            byte[] bytesArray = "Hello World".getBytes();
+            int offset=6;
+            outputStream.write(bytesArray, offset, 5);
+            outputStream.flush();
+
+            int count;
+            while ((count = bufferedInputStream.read()) != -1) {
+                assertEquals(count, bytesArray[offset++]);
+            }
+            assertEquals(-1, count);
+        }
     }
 }

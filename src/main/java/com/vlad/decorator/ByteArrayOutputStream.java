@@ -22,7 +22,6 @@ public class ByteArrayOutputStream extends OutputStream {
 
 
     @Override
-
     public void write(byte[] bytes, int off, int len) {
         validateParameters(bytes, off, len);
 
@@ -53,6 +52,7 @@ public class ByteArrayOutputStream extends OutputStream {
         }
     }
 
+    @Override
     public void write(int value) {
         if (count == array.length) {
             growCapacity(DEFAULT_GROW_SIZE);
@@ -61,7 +61,7 @@ public class ByteArrayOutputStream extends OutputStream {
     }
 
     public byte[] toByteArray() {
-        byte[] newArray = new byte[count];
+        byte[] newArray = new byte[count + 1];
         System.arraycopy(array, 0, newArray, 0, array.length);
         return newArray;
     }

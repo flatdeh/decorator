@@ -1,19 +1,13 @@
 package com.vlad.decorator;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.security.InvalidParameterException;
 import java.util.Arrays;
 
 import static org.junit.Assert.*;
 
 public class ByteArrayInputStreamTest {
-
-    @Before
-    public void setUp() throws Exception {
-    }
 
     @Test
     public void readTest() {
@@ -66,12 +60,12 @@ public class ByteArrayInputStreamTest {
 
     }
 
-    @Test(expected = InvalidParameterException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void readTestWithInvalidParameterException() {
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream("Hello World!!!".getBytes(),123,2222);
     }
 
-    @Test(expected = InvalidParameterException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void readTestWithInvalidParameterExceptionNegativeParameter() {
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream("Hello World!!!".getBytes(),-1,20);
     }

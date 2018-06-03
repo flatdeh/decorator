@@ -29,20 +29,16 @@ public class BufferedOutputStream extends OutputStream {
 
     @Override
     public void write(byte[] bytes, int off, int len) throws IOException {
-        if (bytes.length == buffer.length - count) {
-            System.arraycopy(bytes, off, buffer, count, bytes.length);
-            count += bytes.length;
+        validateParameters(bytes,off,len);
+
+        int emptySpace = buffer.length - count;
+
+        if (emptySpace <= len) {
             flush();
-        } else if (bytes.length < buffer.length - count) {
-            System.arraycopy(bytes, off, buffer, count, bytes.length);
-            count += bytes.length;
+            outputStream.write(bytes, off, len);
         } else {
-            for (int i = 0; i < len; i++) {
-                if (count == buffer.length) {
-                    flush();
-                }
-                buffer[count++] = bytes[off + i];
-            }
+            System.arraycopy(bytes, off, buffer, count, len);
+            count += len;
         }
     }
 
@@ -59,9 +55,24 @@ public class BufferedOutputStream extends OutputStream {
     }
 
     public void write(int value) throws IOException {
+        buffer[count++] = (byte) value;
         if (count == buffer.length) {
             flush();
         }
-        buffer[count++] = (byte) value;
+    }
+
+    private void validateParameters(byte[] bytes, int off, int len) {
+        if (bytes == null) {
+            throw new NullPointerException("bytes = null!");
+        }
+        if (off < 0) {
+            throw new IllegalArgumentException("off should be >= 0! off = " + off);
+        }
+        if (len <= 0) {
+            throw new IllegalArgumentException("len should be > 0! len = " + len);
+        }
+        if (bytes.length < off + len) {
+            throw new IllegalArgumentException("off + len should be <= bytes array length!");
+        }
     }
 }
