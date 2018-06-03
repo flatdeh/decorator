@@ -10,8 +10,8 @@ public class BufferedInputStreamTest {
 
     @Test
     public void readTest() throws IOException {
-        try (BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream("test.log"));
-             OutputStream outputStream = new FileOutputStream("test.log")) {
+        try (OutputStream outputStream = new FileOutputStream("test.log");
+             BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream("test.log"))) {
 
             byte[] bytesArray = "Hello World".getBytes();
             outputStream.write(bytesArray);
@@ -33,7 +33,7 @@ public class BufferedInputStreamTest {
              OutputStream outputStream = new FileOutputStream("test.log")) {
 
             byte[] bytesArray = "Hello World".getBytes();
-            int offset=6;
+            int offset = 6;
             outputStream.write(bytesArray, offset, 5);
             outputStream.flush();
 
