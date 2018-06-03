@@ -20,17 +20,26 @@ public class BufferedInputStream extends InputStream {
     }
 
     public int read(byte[] bytesArray, int offset, int len) throws IOException {
-        int unreadCount = count - index;
-
-        if (len <= unreadCount) {
-            System.arraycopy(buffer, 0, bytesArray, offset, len);
-            index += len;
-            return len;
-        } else {
-            System.arraycopy(buffer, 0, bytesArray, offset, unreadCount);
+        if (index == count) {
             count = inputStream.read(buffer);
             index = 0;
-            return unreadCount;
+        }
+
+        int unreadCount = count - index;
+
+        if (count == -1) {
+            return -1;
+        } else {
+            if (len <= unreadCount) {
+                System.arraycopy(buffer, 0, bytesArray, offset, len);
+                index += len;
+                return len;
+            } else {
+                System.arraycopy(buffer, 0, bytesArray, offset, unreadCount);
+                count = inputStream.read(buffer);
+                index = 0;
+                return unreadCount;
+            }
         }
     }
 
