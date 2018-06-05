@@ -3,6 +3,8 @@ package com.vlad.decorator;
 import java.io.IOException;
 import java.io.InputStream;
 
+import static com.vlad.decorator.Validate.validateParameters;
+
 public class BufferedInputStream extends InputStream {
   private static final int INITIAL_CAPACITY = 5;
   private InputStream inputStream;
@@ -44,10 +46,9 @@ public class BufferedInputStream extends InputStream {
       index += len;
       return len;
     } else {
-      count += inputStream.read(buffer,index,len-unreadCount);
       System.arraycopy(buffer, index, bytesArray, offset, len);
-      //count = inputStream.read(buffer);
-      //index = 0;
+      count = inputStream.read(buffer);
+      index = 0;
       return len;
     }
 
@@ -66,18 +67,5 @@ public class BufferedInputStream extends InputStream {
     inputStream.close();
   }
 
-  private void validateParameters(byte[] bytes, int off, int len) {
-    if (bytes == null) {
-      throw new NullPointerException("bytes = null!");
-    }
-    if (off < 0) {
-      throw new IllegalArgumentException("off should be >= 0! off = " + off);
-    }
-    if (len <= 0) {
-      throw new IllegalArgumentException("len should be > 0! len = " + len);
-    }
-    if (bytes.length < off + len) {
-      throw new IllegalArgumentException("off + len should be <= bytes array length!");
-    }
-  }
+
 }

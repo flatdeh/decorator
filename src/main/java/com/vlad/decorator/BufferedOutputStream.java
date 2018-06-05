@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.security.InvalidParameterException;
 
+import static com.vlad.decorator.Validate.validateParameters;
+
 public class BufferedOutputStream extends OutputStream {
   private static final int INITIAL_CAPACITY = 5;
   private OutputStream outputStream;
@@ -66,21 +68,6 @@ public class BufferedOutputStream extends OutputStream {
     buffer[count++] = (byte) value;
     if (count == buffer.length) {
       flush();
-    }
-  }
-
-  private void validateParameters(byte[] bytes, int off, int len) {
-    if (bytes == null) {
-      throw new NullPointerException("bytes = null!");
-    }
-    if (off < 0) {
-      throw new IllegalArgumentException("off should be >= 0! off = " + off);
-    }
-    if (len <= 0) {
-      throw new IllegalArgumentException("len should be > 0! len = " + len);
-    }
-    if (bytes.length < off + len) {
-      throw new IllegalArgumentException("off + len should be <= bytes array length!");
     }
   }
 }

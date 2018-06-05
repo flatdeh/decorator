@@ -2,6 +2,8 @@ package com.vlad.decorator;
 
 import java.io.InputStream;
 
+import static com.vlad.decorator.Validate.validateParameters;
+
 public class StringBufferInputStream extends InputStream {
   private byte[] buffer;
   private int index;
@@ -30,21 +32,6 @@ public class StringBufferInputStream extends InputStream {
       index += len;
     }
     return len;
-  }
-
-  private void validateParameters(byte[] bytes, int off, int len) {
-    if (bytes == null) {
-      throw new NullPointerException("bytes = null!");
-    }
-    if (off < 0) {
-      throw new IllegalArgumentException("off should be >= 0! off = " + off);
-    }
-    if (len <= 0) {
-      throw new IllegalArgumentException("len should be > 0! len = " + len);
-    }
-    if (bytes.length < off + len) {
-      throw new IllegalArgumentException("off + len should be <= bytes array length!");
-    }
   }
 
   public int read() {
