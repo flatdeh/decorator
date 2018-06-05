@@ -46,7 +46,7 @@ public class BufferedInputStream extends InputStream {
       index += len;
       return len;
     } else {
-      System.arraycopy(buffer, index, bytesArray, offset, len);
+      System.arraycopy(buffer, index, bytesArray, offset, unreadCount);
       count = inputStream.read(buffer);
       index = 0;
       return len;
